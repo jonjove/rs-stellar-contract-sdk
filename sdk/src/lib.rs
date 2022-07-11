@@ -25,6 +25,9 @@ pub use env::Symbol;
 pub use env::TryFromVal;
 use env::*;
 
+#[cfg(feature = "testutils")]
+pub use env::internal::{ContractVTable, ContractVTableFn, ContractVTableFnTrait};
+
 mod bigint;
 mod binary;
 mod map;

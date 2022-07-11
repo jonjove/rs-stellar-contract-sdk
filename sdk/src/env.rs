@@ -13,20 +13,13 @@ pub mod internal {
 }
 
 pub use crate::binary::{ArrayBinary, Binary, FixedLengthBinary};
-pub use internal::xdr;
-pub use internal::BitSet;
-pub use internal::ConversionError;
-pub use internal::EnvBase;
-pub use internal::IntoEnvVal;
-pub use internal::IntoVal;
-pub use internal::Object;
-pub use internal::RawVal;
-pub use internal::Status;
-pub use internal::Symbol;
-pub use internal::TaggedVal;
-pub use internal::TryFromVal;
-pub use internal::Val;
+pub use internal::{
+    xdr, BitSet, ConversionError, EnvBase, IntoEnvVal, IntoVal, Object, RawVal, Status, Symbol,
+    TaggedVal, TryFromVal, Val,
+};
 
+#[cfg(feature = "testutils")]
+pub use internal::{ContractVTable, ContractVTableFn, ContractVTableFnTrait};
 #[cfg(feature = "testutils")]
 use std::rc::Rc;
 
@@ -73,6 +66,14 @@ impl Env {
         Env {
             env_impl: internal::EnvImpl::with_storage(storage),
         }
+    }
+
+    #[cfg(feature = "testutils")]
+    pub fn register_test_contract(&self, contract_id: Binary, vtable: ContractVTable) {
+        let id_obj: Object = RawVal::from(contract_id).try_into().unwrap();
+        self.env_impl
+            .register_test_contract(id_obj, vtable)
+            .unwrap();
     }
 
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
