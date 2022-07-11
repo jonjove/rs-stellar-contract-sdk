@@ -28,8 +28,6 @@ pub use internal::TryFromVal;
 pub use internal::Val;
 
 #[cfg(feature = "testutils")]
-pub use internal::FrameGuard;
-#[cfg(feature = "testutils")]
 use std::rc::Rc;
 
 pub type EnvVal = internal::EnvVal<Env, RawVal>;
@@ -75,13 +73,6 @@ impl Env {
         Env {
             env_impl: internal::EnvImpl::with_storage(storage),
         }
-    }
-
-    #[cfg(feature = "testutils")]
-    pub fn push_test_frame(&self, contract_id: ArrayBinary<32>) -> FrameGuard {
-        self.env_impl
-            .push_test_frame(contract_id.into_val(self))
-            .unwrap()
     }
 
     pub fn get_invoking_contract(&self) -> ArrayBinary<32> {
